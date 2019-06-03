@@ -1,0 +1,23 @@
+#port where service shall LISTEN for connection
+listenPort: :3000
+
+#database configuration
+dbType: mysql
+dbUrl: root:@tcp(127.0.0.1:3306)/promo
+
+#redis configuration
+#RedisURL: 127.0.0.1:6379
+redisURL: 127.0.0.1:6379
+
+#whitelist IP
+listIP:
+  - 192.168.1.1
+  - ::1
+
+# logging
+logsFile:
+  getToken: get_token_logs_
+  promo: promo_logs_
+  runningApp: running_app_logs_ 
+
+logDir: "/tmp/"
