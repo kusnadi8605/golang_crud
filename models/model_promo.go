@@ -113,9 +113,6 @@ func GetPromoDetail(conn *conf.Connection, promoID string) ([]dts.PromoDetail, e
 	// key redis
 	key := "PROMO" + promoID
 	jsonString, err := utl.Get(key)
-
-	fmt.Println("Return redis: ", jsonString)
-
 	// data not found
 	if err == redis.ErrNil {
 		strQuery := `select 
@@ -177,6 +174,14 @@ func GetPromoDetail(conn *conf.Connection, promoID string) ([]dts.PromoDetail, e
 			}
 
 			arrPromoDetail = append(arrPromoDetail, strPromoDetail)
+
+		}
+
+		//save to redis
+		jsonData, err := json.Marshal(arrPromoDetail)
+		err = utl.SetTex(key, 30, jsonData)
+		if err != nil {
+			return nil, err
 		}
 
 	} else if err != nil {

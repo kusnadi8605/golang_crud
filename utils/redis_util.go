@@ -21,6 +21,23 @@ func Ping() error {
 	return nil
 }
 
+//SetTex  ..
+func SetTex(key string, time int, value []byte) error {
+
+	conn := conf.RedisPool.Get()
+	defer conn.Close()
+
+	_, err := conn.Do("SETEX", key, time, value)
+	if err != nil {
+		v := string(value)
+		if len(v) > 15 {
+			v = v[0:12] + "..."
+		}
+		return fmt.Errorf("error setting key %s to %s: %v", key, v, err)
+	}
+	return err
+}
+
 //Get ..
 func Get(key string) ([]byte, error) {
 	conn := conf.RedisPool.Get()
