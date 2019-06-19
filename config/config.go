@@ -2,7 +2,6 @@ package config
 
 import (
 	"os"
-	"promo_api/parser"
 )
 
 //Param ..
@@ -22,7 +21,7 @@ type Configuration struct {
 
 // LoadConfigFromFile use to load global configuration
 func LoadConfigFromFile(fn *string) {
-	if err := parser.LoadYAML(fn, &Param); err != nil {
+	if err := LoadYAML(fn, &Param); err != nil {
 		os.Exit(1)
 	}
 }

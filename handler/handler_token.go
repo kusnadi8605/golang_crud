@@ -2,13 +2,12 @@ package handler
 
 import (
 	"encoding/json"
+	conf "golang_crud/config"
+	dts "golang_crud/datastruct"
+	mdl "golang_crud/models"
 	"io/ioutil"
 	"net"
 	"net/http"
-	conf "promo_api/config"
-	dts "promo_api/datastruct"
-	logger "promo_api/logging"
-	mdl "promo_api/models"
 	"time"
 )
 
@@ -24,12 +23,12 @@ func GetTokenHandler(conn *conf.Connection) http.HandlerFunc {
 		timestamp := req.Header.Get("timestamp")
 
 		logDate := time.Now().Format("20060102")
-		logger.SetFilename(conf.Param.LogDir + conf.Param.LogsFile["getToken"] + logDate + ".txt")
+		conf.SetFilename(conf.Param.LogDir + conf.Param.LogsFile["getToken"] + logDate + ".txt")
 
 		body, err := ioutil.ReadAll(req.Body)
 		//ip client
 		ip, _, _ := net.SplitHostPort(req.RemoteAddr)
-		logger.Logf("Header & Body GetToken: %s %s %s", ip, string(body[:]), req.Header)
+		conf.Logf("Header & Body GetToken: %s %s %s", ip, string(body[:]), req.Header)
 
 		if err != nil {
 			panic(err)
@@ -43,7 +42,7 @@ func GetTokenHandler(conn *conf.Connection) http.HandlerFunc {
 			TokenResponse.ResponseDesc = err.Error()
 			json.NewEncoder(w).Encode(TokenResponse)
 
-			logger.Logf("Decode GetToken : %s", err)
+			conf.Logf("Decode GetToken : %s", err)
 
 			return
 		}
@@ -55,7 +54,7 @@ func GetTokenHandler(conn *conf.Connection) http.HandlerFunc {
 			TokenResponse.ResponseDesc = err.Error()
 			json.NewEncoder(w).Encode(TokenResponse)
 
-			logger.Logf("Response GetToken : %s", TokenResponse.ResponseDesc)
+			conf.Logf("Response GetToken : %s", TokenResponse.ResponseDesc)
 
 			return
 		}
@@ -67,7 +66,7 @@ func GetTokenHandler(conn *conf.Connection) http.HandlerFunc {
 			TokenResponse.ResponseDesc = "data not found"
 			json.NewEncoder(w).Encode(TokenResponse)
 
-			logger.Logf("Response GetToken : %s", TokenResponse.ResponseDesc)
+			conf.Logf("Response GetToken : %s", TokenResponse.ResponseDesc)
 
 			return
 		}
@@ -76,7 +75,7 @@ func GetTokenHandler(conn *conf.Connection) http.HandlerFunc {
 		TokenResponse.ResponseDesc = "Success"
 		TokenResponse.Payload = Token
 
-		logger.Logf("Response GetToken : %s", TokenResponse.ResponseDesc)
+		conf.Logf("Response GetToken : %s", TokenResponse.ResponseDesc)
 
 		json.NewEncoder(w).Encode(TokenResponse)
 	}

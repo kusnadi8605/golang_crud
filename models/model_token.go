@@ -3,11 +3,11 @@ package models
 import (
 	"crypto/sha256"
 	"fmt"
+	conf "golang_crud/config"
+	dts "golang_crud/datastruct"
+
 	"net/http"
-	conf "promo_api/config"
-	dts "promo_api/datastruct"
-	logger "promo_api/logging"
-	utl "promo_api/utils"
+	//utl "golang_crud/model"
 )
 
 //GetToken d
@@ -28,7 +28,7 @@ func GetToken(conn *conf.Connection, req dts.TokenRequest, channel string, times
 	strQuery := "SELECT password FROM mtr_channel WHERE channel=?"
 	rows, err := conn.Query(strQuery, channel)
 
-	logger.Logf("Query GetToken : %s %s", strQuery, channel)
+	conf.Logf("Query GetToken : %s %s", strQuery, channel)
 
 	if err != nil {
 		return nil, err
@@ -45,7 +45,7 @@ func GetToken(conn *conf.Connection, req dts.TokenRequest, channel string, times
 		//arrToken = append(arrToken, strToken)
 	}
 	//generate Token
-	token, _ := utl.GetToken(strToken.Token + channel)
+	token, _ := GetTokenJwt(strToken.Token + channel)
 
 	strToken.Token = token
 	arrToken = append(arrToken, strToken)
@@ -60,7 +60,7 @@ func CheckToken(conn *conf.Connection, r *http.Request, channel string) (bool, e
 	strQuery := "SELECT password FROM mtr_channel WHERE channel=?"
 	rows, err := conn.Query(strQuery, channel)
 
-	logger.Logf("Query checkToken : %s %s", strQuery, channel)
+	conf.Logf("Query checkToken : %s %s", strQuery, channel)
 
 	if err != nil {
 		return false, err
@@ -80,7 +80,7 @@ func CheckToken(conn *conf.Connection, r *http.Request, channel string) (bool, e
 	}
 
 	//check Token
-	token, err := utl.ValidToken(r, strToken.Token+channel)
+	token, err := ValidTokenJwt(r, strToken.Token+channel)
 	//fmt.Println("param token : ", token, " ", err)
 	return token, err
 }

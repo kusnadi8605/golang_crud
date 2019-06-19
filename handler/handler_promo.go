@@ -2,12 +2,11 @@ package handler
 
 import (
 	"encoding/json"
+	conf "golang_crud/config"
+	dts "golang_crud/datastruct"
+	mdl "golang_crud/models"
 	"io/ioutil"
 	"net/http"
-	conf "promo_api/config"
-	dts "promo_api/datastruct"
-	logger "promo_api/logging"
-	mdl "promo_api/models"
 	"strconv"
 	"time"
 )
@@ -22,18 +21,9 @@ func GetPromoHandler(conn *conf.Connection) http.HandlerFunc {
 		var PromoResponse dts.PromoResponse
 
 		logDate := time.Now().Format("20060102")
-		logger.SetFilename(conf.Param.LogDir + conf.Param.LogsFile["promo"] + logDate + ".txt")
+		conf.SetFilename(conf.Param.LogDir + conf.Param.LogsFile["promo"] + logDate + ".txt")
 
 		body, err := ioutil.ReadAll(req.Body)
-		/*
-			ip, _, _ := net.SplitHostPort(req.RemoteAddr)
-			logger.Logf("Header & Body Promo: %s %s %s", ip, string(body[:]), req.Header)
-
-			if err != nil {
-				panic(err)
-			}*/
-
-		//log.Println(string(body))
 
 		err = json.Unmarshal(body, &reqPromo)
 		if err != nil {
@@ -41,7 +31,7 @@ func GetPromoHandler(conn *conf.Connection) http.HandlerFunc {
 			PromoResponse.ResponseDesc = err.Error()
 			json.NewEncoder(w).Encode(PromoResponse)
 
-			logger.Logf("Decode Product : %s", err)
+			conf.Logf("Decode Product : %s", err)
 
 			return
 		}
@@ -76,7 +66,7 @@ func GetPromoHandler(conn *conf.Connection) http.HandlerFunc {
 			PromoResponse.ResponseDesc = err.Error()
 			json.NewEncoder(w).Encode(PromoResponse)
 
-			logger.Logf("Response Product : %v", PromoResponse.ResponseDesc)
+			conf.Logf("Response Product : %v", PromoResponse.ResponseDesc)
 
 			return
 		}
@@ -86,7 +76,7 @@ func GetPromoHandler(conn *conf.Connection) http.HandlerFunc {
 			PromoResponse.ResponseDesc = "data not found"
 			json.NewEncoder(w).Encode(PromoResponse)
 
-			logger.Logf("Response Product : %v", PromoResponse.ResponseDesc)
+			conf.Logf("Response Product : %v", PromoResponse.ResponseDesc)
 
 			return
 		}
@@ -96,7 +86,7 @@ func GetPromoHandler(conn *conf.Connection) http.HandlerFunc {
 		PromoResponse.Payload = listPromo
 		json.NewEncoder(w).Encode(PromoResponse)
 
-		logger.Logf("Response Product : %v", PromoResponse.ResponseDesc)
+		conf.Logf("Response Product : %v", PromoResponse.ResponseDesc)
 	}
 }
 
@@ -110,18 +100,9 @@ func GetPromoDetailHandler(conn *conf.Connection) http.HandlerFunc {
 		var PromoDetailResponse dts.PromoDetailResponse
 
 		logDate := time.Now().Format("20060102")
-		logger.SetFilename(conf.Param.LogDir + conf.Param.LogsFile["promo"] + logDate + ".txt")
+		conf.SetFilename(conf.Param.LogDir + conf.Param.LogsFile["promo"] + logDate + ".txt")
 
 		body, err := ioutil.ReadAll(req.Body)
-		/*
-			ip, _, _ := net.SplitHostPort(req.RemoteAddr)
-			logger.Logf("Header & Body PromoR: %s %s %s", ip, string(body[:]), req.Header)
-
-			if err != nil {
-				panic(err)
-			}*/
-
-		//log.Println(string(body))
 
 		err = json.Unmarshal(body, &reqPromoDetail)
 		if err != nil {
@@ -130,7 +111,7 @@ func GetPromoDetailHandler(conn *conf.Connection) http.HandlerFunc {
 
 			json.NewEncoder(w).Encode(PromoDetailResponse)
 
-			logger.Logf("Decode Product : %s", err)
+			conf.Logf("Decode Product : %s", err)
 
 			return
 		}
@@ -145,7 +126,7 @@ func GetPromoDetailHandler(conn *conf.Connection) http.HandlerFunc {
 			PromoDetailResponse.Payload = detailPromo
 			json.NewEncoder(w).Encode(PromoDetailResponse)
 
-			logger.Logf("Response Product : %v", PromoDetailResponse.ResponseDesc)
+			conf.Logf("Response Product : %v", PromoDetailResponse.ResponseDesc)
 
 			return
 		}
@@ -156,7 +137,7 @@ func GetPromoDetailHandler(conn *conf.Connection) http.HandlerFunc {
 			//PromoDetailResponse.Payload = detailPromo
 			json.NewEncoder(w).Encode(PromoDetailResponse)
 
-			logger.Logf("Response Product : %v", PromoDetailResponse.ResponseDesc)
+			conf.Logf("Response Product : %v", PromoDetailResponse.ResponseDesc)
 
 			return
 		}
@@ -166,6 +147,6 @@ func GetPromoDetailHandler(conn *conf.Connection) http.HandlerFunc {
 		PromoDetailResponse.Payload = detailPromo
 		json.NewEncoder(w).Encode(PromoDetailResponse)
 
-		logger.Logf("Response Product : %v", PromoDetailResponse.ResponseDesc)
+		conf.Logf("Response Product : %v", PromoDetailResponse.ResponseDesc)
 	}
 }

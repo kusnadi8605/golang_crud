@@ -2,13 +2,13 @@ package main
 
 import (
 	"flag"
+	"fmt"
+	conf "golang_crud/config"
+	hdlr "golang_crud/handler"
+	mdw "golang_crud/middleware"
 	"log"
 	"net/http"
 	"os"
-	conf "promo_api/config"
-	hdlr "promo_api/handler"
-	logger "promo_api/logging"
-	mdw "promo_api/middleware"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -22,12 +22,12 @@ func init() {
 
 	//logDate := time.Now().Format("20060102")
 	//fmt.Println(logDate)
-	//logger.SetFilename(conf.Param.LogDir + conf.Param.LogsFile["runningApp"] + logDate + ".txt")
+	//conf.SetFilename(conf.Param.LogDir + conf.Param.LogsFile["runningApp"] + logDate + ".txt")
 
-	//logger.Logf("Load Conf File %s ", *configFile)
+	//conf.Logf("Load Conf File %s ", *configFile)
 
 	conf.RedisDbInit(conf.Param.RedisURL)
-	//logger.Logf("Load Redis Conf...")
+	//conf.Logf("Load Redis Conf...")
 
 }
 
@@ -35,12 +35,11 @@ func main() {
 	// open mysql connection
 
 	conn, err := conf.New(conf.Param.DBType, conf.Param.DBUrl)
-
-	logger.Logf("Load Database Conf: %s ", conf.Param.DBType)
-	logger.Logf("running App on port: %s ", conf.Param.ListenPort)
+	conf.Logf("Load Database Conf: %s ", conf.Param.DBType)
+	conf.Logf("running App on port: %s ", conf.Param.ListenPort)
 
 	if err != nil {
-		logger.Logf("Load Database Conf: %s ", err)
+		conf.Logf("Load Database Conf: %s ", err)
 		log.Fatal(err)
 	}
 
@@ -52,7 +51,8 @@ func main() {
 	errors = http.ListenAndServe(conf.Param.ListenPort, nil)
 
 	if errors != nil {
-		logger.Logf("Unable to start the server: %s ", conf.Param.ListenPort)
+		fmt.Println("error", errors)
+		conf.Logf("Unable to start the server: %s ", conf.Param.ListenPort)
 		os.Exit(1)
 	}
 }

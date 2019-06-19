@@ -3,11 +3,11 @@ package middleware
 import (
 	"encoding/json"
 	"fmt"
+	conf "golang_crud/config"
+	dts "golang_crud/datastruct"
+	mdl "golang_crud/models"
 	"log"
 	"net/http"
-	conf "promo_api/config"
-	dts "promo_api/datastruct"
-	mdl "promo_api/models"
 	"time"
 )
 

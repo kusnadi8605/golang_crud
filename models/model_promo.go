@@ -3,10 +3,8 @@ package models
 import (
 	"encoding/json"
 	"fmt"
-	conf "promo_api/config"
-	dts "promo_api/datastruct"
-	logger "promo_api/logging"
-	utl "promo_api/utils"
+	conf "golang_crud/config"
+	dts "golang_crud/datastruct"
 	"strconv"
 
 	"github.com/gomodule/redigo/redis"
@@ -69,7 +67,7 @@ func GetPromo(conn *conf.Connection, search string, order string, sort string, o
 
 	rows, err := conn.Query(strQuery, offset, limmit)
 
-	logger.Logf("Query Promo : %s %v %v", strQuery, offset, limmit)
+	conf.Logf("Query Promo : %s %v %v", strQuery, offset, limmit)
 
 	defer rows.Close()
 	if err != nil {
@@ -112,7 +110,7 @@ func GetPromoDetail(conn *conf.Connection, promoID string) ([]dts.PromoDetail, e
 
 	// key redis
 	key := "PROMO" + promoID
-	jsonString, err := utl.Get(key)
+	jsonString, err := Get(key)
 	// data not found
 	if err == redis.ErrNil {
 		strQuery := `select 
@@ -140,7 +138,7 @@ func GetPromoDetail(conn *conf.Connection, promoID string) ([]dts.PromoDetail, e
 
 		rows, err := conn.Query(strQuery)
 
-		logger.Logf("Query Promo  detail: %s", strQuery)
+		conf.Logf("Query Promo  detail: %s", strQuery)
 
 		defer rows.Close()
 		if err != nil {
@@ -179,7 +177,7 @@ func GetPromoDetail(conn *conf.Connection, promoID string) ([]dts.PromoDetail, e
 
 		//save to redis
 		jsonData, err := json.Marshal(arrPromoDetail)
-		err = utl.SetTex(key, 30, jsonData)
+		err = SetTex(key, 30, jsonData)
 		if err != nil {
 			return nil, err
 		}
